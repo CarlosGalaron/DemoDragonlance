@@ -1,0 +1,145 @@
+.Scenario-father{
+	width: 100vw;
+	height: 100vh;
+	background-image: url(../../images/Escenario.png);
+	background-size: cover;         /* Ajusta el tamaño para cubrir toda la pantalla */
+	background-position: bottom;    /* Centra la imagen en la pantalla */
+	background-repeat: no-repeat;   /* Evita que la imagen se repita */
+	background-attachment: fixed;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding-bottom: 3rem;
+}
+
+.Scenario-card-board{
+	width: 100vw;
+	height: 50vh;	
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: 2rem;
+}
+
+.Scenario-buttons-and-log{
+	width: 100vw;
+	height: 24vh;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 2rem;
+}
+
+.Scenario-buttons{
+	width: 36vw;
+	height: 24vh;
+	background-color: silver;
+	border: 2px solid darkred;
+	border-radius: 2%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.action-buttons{
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	align-items: center;
+}
+
+.combat-selector-father{
+	width: 24vw;
+	height: 24vh;
+	display: flex;
+	flex-direction: row;
+
+}
+
+.combat-labels-container {
+	width: 6rem;
+	height: 22vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: left;
+	padding: 1rem;
+}
+
+.combat-label{
+	width: 10rem;
+	font-size: 14px;
+	display: flex;	
+	justify-content: left;
+	align-items: center;
+}
+
+.combat-selector-container{
+	width: 10rem;
+	height: 22vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: left;
+	padding: 1rem;
+}
+
+.combat-selector {
+	font-size: 14px;
+	width: 10rem;
+	height: 1.4rem;
+	border-radius: 2%;
+}
+
+.action-container {
+	width: 20vh;
+	height: 20vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: left;
+	padding: 0.5rem;
+}
+
+.change-button{
+	font-weight: bolder;
+}
+
+.change-button:hover{
+	cursor:grab;
+	color: darkred;
+}
+
+.Scenario-log{
+	width: 56vw;
+	height: 24vh;
+	background-color: blanchedalmond;
+	color: darkred;
+	border: 2px solid darkred;
+	border-radius: 2%;
+	padding: 0.5rem;
+	overflow-y: scroll;
+
+	 /* Estilo del scroll */
+	 &::-webkit-scrollbar {
+		width: 8px;
+		background: #f1f1f1; /* Color del scrollbar */		
+	  }
+	  
+	  &::-webkit-scrollbar-track {	
+		background: #e4c4c4; /* Fondo del track del scrollbar */
+		border: 1px solid white;
+		box-sizing: border-box;
+	  }
+	  
+	  &::-webkit-scrollbar-thumb {		
+		background: #aa2525; /* Color del thumb del scrollbar */
+		border-radius: 10px; /* Redondeo opcional */
+	  }
+	  
+	  &::-webkit-scrollbar-thumb:hover {
+		background: #6b1717; /* Color al pasar el mouse */
+	  }
+	
+}

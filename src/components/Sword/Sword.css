@@ -1,0 +1,28 @@
+.sword-icon-container {    
+    width: auto;
+    height: 12vh;
+    background-color: none;
+
+}
+
+.sword-icon {
+    width: auto;
+    height: 12vh;
+    object-fit: cover;
+    cursor: grab;
+}
+
+.sword-icon {
+    transition: transform 0.2s ease;
+}
+
+.swing {
+    animation: swingAnimation 0.4s ease;
+}
+
+/* Definición de la animación */
+@keyframes swingAnimation {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); } /* Movimiento hacia la derecha */
+    100% { transform: rotate(0deg); } /* Vuelve a la posición original */
+}
