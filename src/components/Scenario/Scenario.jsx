@@ -321,7 +321,8 @@ function Scenario() {
   return (
     <div className='Scenario-father'>
         <div className='Scenario-card-board'>
-					<CharCard character={hero} />
+			<CharCard character={hero} />
+			<Sword handleTurn={handleTurn} />
         	<CharCard character={monster} />
         </div>
         <div className='Scenario-buttons-and-log'>

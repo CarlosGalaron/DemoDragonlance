@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Scenario.css';
 import Sword from '../Sword/Sword.jsx';
 import CharCard from '../CharCard/CharCard.jsx';
 import { arrayHeroes, arrayMonsters } from '../../modelo/charFunctions';
 
 function Scenario() {
+
+	const [turn, setTurn] = useState('hero'); // Puede ser 'hero' o 'monster'
+
 
 	const [log, setLog] = useState([]);
 
@@ -14,14 +17,55 @@ function Scenario() {
 	const [hero, setHero] = useState({
 		...heroes[0],              // Copia las propiedades del primer héroe
 		weapon: heroes[0].weapon1,  // Establece el arma por defecto (por ejemplo, weapon1)
-		attack: heroes[0].attack1   // Establece la habilidad por defecto (por ejemplo, attack1)
+		ability: heroes[0].attack1,   // Establece la habilidad por defecto (por ejemplo, attack1)
+		armour: heroes[0].armour,  // Establece el armadura por defecto (por ejemplo, armour)
 	});
 
 	const [monster, setMonster] = useState({
   ...monsters[0],             // Copia las propiedades del primer monstruo
   weapon: monsters[0].weapon1, // Establece el arma por defecto (por ejemplo, weapon1)
-  attack: monsters[0].attack1  // Establece la habilidad por defecto (por ejemplo, attack1)
-});
+  ability: monsters[0].attack1,  // Establece la habilidad por defecto (por ejemplo, attack1)
+  armour: monsters[0].armour,  // Establece el armadura por defecto (por ejemplo, armour)
+	});
+
+	//funcion para resetear el juego
+	const resetGame = () => {
+		setHeroes(arrayHeroes);
+		setMonsters(arrayMonsters);
+		setHero({
+			...heroes[0],              // Copia las propiedades del primer héroe
+			weapon: heroes[0].weapon1,  // Establece el arma por defecto (por ejemplo, weapon1)
+			ability: heroes[0].attack1,   // Establece la habilidad por defecto (por ejemplo, attack1)
+			armour: heroes[0].armour,  // Establece el armadura por defecto (por ejemplo, armour)
+		});
+
+		setMonster({
+			...monsters[0],             // Copia las propiedades del primer monstruo
+			weapon: monsters[0].weapon1, // Establece el arma por defecto (por ejemplo, weapon1)
+			ability: monsters[0].attack1,  // Establece la habilidad por defecto (por ejemplo, attack1)
+			armour: monsters[0].armour,  // Establece el armadura por defecto (por ejemplo, armour)
+		});
+
+		setLog([]);
+		setTurn('');
+	};
+
+	// Función para verificar el orden de iniciativa
+	const checkOrder = () => {
+		const heroInitiative = hero.dexterity+hero.intelligence;
+		const monsterInitiative = monster.dexterity+monster.intelligence;
+		
+		if (heroInitiative >= monsterInitiative) {
+			setTurn('hero');
+		}
+		else {
+			setTurn('monster');
+		}
+	};
+
+	useEffect(() => {
+		checkOrder(); // Llama a checkOrder para asegurarte del turno correcto
+	}, [hero, monster]);
 
 
 	// Función para manejar el cambio del héroe seleccionado
@@ -31,66 +75,85 @@ function Scenario() {
 		setHero({
 			...newHero,                // Copia todas las propiedades del nuevo héroe
 			weapon: newHero.weapon1,    // Establece el valor de weapon por defecto
-			attack: newHero.attack1     // Establece el valor de attack por defecto
+			ability: newHero.attack1,     // Establece el valor de attack por defecto
+			armour: newHero.armour,     // Establece el valor de armour por defecto
 		});
 	};
 
-  // Función para manejar el cambio del monstruo seleccionado
-  const handleMonsterChange = (e) => {
-    const newMonster = monsters.find(monster => monster.name === e.target.value);
+  // Función para manejar el cambio del monstruo seleccionadoque no hace falta de momento
+  // const handleMonsterChange = (e) => {
+  //   const newMonster = monsters.find(monster => monster.name === e.target.value);
 
-    setMonster({
-      ...newMonster,             // Copia todas las propiedades del nuevo monstruo
-      weapon: newMonster.weapon1, // Establece el valor de weapon por defecto
-      attack: newMonster.attack1  // Establece el valor de attack por defecto
-    });
-  };
+  //   setMonster({
+  //     ...newMonster,             // Copia todas las propiedades del nuevo monstruo
+  //     weapon: newMonster.weapon1, // Establece el valor de weapon por defecto
+  //     ability: newMonster.attack1,  // Establece el valor de attack por defecto
+	//   	armour: newMonster.armour,  // Establece el valor de armour por defecto
+  //   });
+  // };
 
 	const handleHeroDeath = () => {
-		// Filtramos el array de héroes para eliminar al héroe muerto
-		const remainingHeroes = heroes.filter((h) => h.name !== hero.name);
-	
-		// Si hay más héroes disponibles, seleccionamos uno nuevo
-		if (remainingHeroes.length > 0) {
-			const newHero = remainingHeroes[0];  // Tomamos el primer héroe disponible
-	
-			// Actualizamos el héroe seleccionado y sus atributos
-			setHero({
-				...newHero,  // Propagamos todos los atributos del nuevo héroe
-				weapon: newHero.weapon1,  // Asignamos el primer arma como predeterminada
-				ability: newHero.attack1,  // Asignamos la primera habilidad como predeterminada
-			});
-		} else {
-			// Si no hay más héroes, puedes manejar el fin del juego o algún mensaje
-			alert("No hay más héroes disponibles. Fin del juego.");
-		}
-	
-		// Actualizamos el array de héroes sin el héroe muerto
-		setHeroes(remainingHeroes);
-	};
+    const deathLog = `${hero.name} ha muerto.`;
+    const endLog = "Todos los héroes han caído. Fin del juego.";
+    
+    // Agregar el mensaje de muerte al log
+    setLog((prevLog) => [...prevLog, deathLog]);
 
-	const handleMonsterDeath = () => {
-		// Filtramos el array de monstruos para eliminar al monstruo muerto
-		const remainingMonsters = monsters.filter((m) => m.name !== monster.name);
-	
-		// Si hay más monstruos disponibles, seleccionamos uno nuevo
-		if (remainingMonsters.length > 0) {
-			const newMonster = remainingMonsters[0];  // Tomamos el primer monstruo disponible
-	
-			// Actualizamos el monstruo seleccionado y sus atributos
-			setMonster({
-				...newMonster,  // Propagamos todos los atributos del nuevo monstruo
-				weapon: newMonster.weapon1,  // Asignamos el primer arma como predeterminada
-				ability: newMonster.attack1,  // Asignamos la primera habilidad como predeterminada
-			});
-		} else {
-			// Si no hay más monstruos, puedes manejar el fin del juego o algún mensaje
-			alert("No hay más monstruos disponibles. Fin del juego.");
-		}
-	
-		// Actualizamos el array de monstruos sin el monstruo muerto
-		setMonsters(remainingMonsters);
-	};
+    // Filtrar el array de héroes para eliminar al héroe muerto
+    const remainingHeroes = heroes.filter((h) => h.name !== hero.name);
+
+    if (remainingHeroes.length > 0) {
+        // Si quedan héroes, seleccionar uno nuevo
+        const newHero = remainingHeroes[0];
+
+        setHero({
+            ...newHero,
+            weapon: newHero.weapon1,
+            ability: newHero.attack1,
+            armour: newHero.armour,
+        });
+    } else {
+        // Si no quedan héroes, agregar mensaje final al log
+        setLog((prevLog) => [...prevLog, endLog]);
+        alert(endLog);
+        resetGame();
+    }
+
+    // Actualizar la lista de héroes restantes
+    setHeroes(remainingHeroes);
+};
+
+const handleMonsterDeath = () => {
+    const deathLog = `${monster.name} ha muerto.`;
+    const endLog = "Todos los monstruos han sido derrotados. ¡Has ganado!";
+    
+    // Agregar el mensaje de muerte al log
+    setLog((prevLog) => [...prevLog, deathLog]);
+
+    // Filtrar el array de monstruos para eliminar al monstruo muerto
+    const remainingMonsters = monsters.filter((m) => m.name !== monster.name);
+
+    if (remainingMonsters.length > 0) {
+        // Si quedan monstruos, seleccionar uno nuevo
+        const newMonster = remainingMonsters[0];
+
+        setMonster({
+            ...newMonster,
+            weapon: newMonster.weapon1,
+            ability: newMonster.attack1,
+            armour: newMonster.armour,
+        });
+    } else {
+        // Si no quedan monstruos, agregar mensaje final al log
+        setLog((prevLog) => [...prevLog, endLog]);
+        alert(endLog);
+        resetGame();
+    }
+
+    // Actualizar la lista de monstruos restantes
+    setMonsters(remainingMonsters);
+};
+
 	
 
 	// Función para manejar el cambio de arma seleccionada
@@ -102,24 +165,78 @@ function Scenario() {
 		});
 	  };
 
-// Función para manejar el cambio de habilidad seleccionada
-const handleAbilityChange = (e) => {
-	const selectedAbility = hero.attack1.name === e.target.value ? hero.attack1 : hero.attack2;
-	setHero({
-	  ...hero,
-	  ability: selectedAbility, // Actualiza la habilidad del héroe
-	});
+	// Función para manejar el cambio de habilidad seleccionada
+	const handleAbilityChange = (e) => {
+		const selectedAbility = hero.attack1.name === e.target.value ? hero.attack1 : hero.attack2;
+		setHero({
+			...hero,
+			ability: selectedAbility, // Actualiza la habilidad del héroe
+		});
+	};
+
+	//funcion para manejar el log
+	const handleLog = () => {
+		const testLog = ('esto es una prueba del log');	
+		setLog(testLog);
+
+	};
+
+	const calculateDamage = (weapon, ability, armour) => {
+		return Math.max(weapon.damage + ability.damage - armour, 0); // Calcula el daño teniendo en cuenta el ataque y el arma.
+  };
+  
+
+//funcion para manejar el turno del héroe
+const handleHeroAttack = () => {
+	const damage = calculateDamage(hero.weapon, hero.ability , monster.armour);
+	const newMonsterHp = monster.currentHp - damage;
+
+	const attackLog = `${hero.name} atacó a ${monster.name} con ${hero.ability.name}, causando ${damage} de daño.`;
+  setLog((prevLog) => [...prevLog, attackLog]);
+	
+	if (newMonsterHp <= 0) {
+	  handleMonsterDeath(); // Si el monstruo muere, se realiza la acción de muerte
+	} else {
+	  setMonster(prev => ({ ...prev, currentHp: newMonsterHp })); // Actualiza el HP del monstruo
+	}
 };
 
-//funcion para manejar el log
-const handleLog = () => {
+//funcion para manejar el turno del monstruo
+const handleMonsterAttack = () => {
+
+	const damage = calculateDamage(monster.weapon, monster.ability, hero.armour);
+	const newHeroHp = hero.currentHp - damage;
+
+	const attackLog = `${monster.name} atacó a ${hero.name} con ${monster.ability.name}, causando ${damage} de daño.`;
+  setLog((prevLog) => [...prevLog, attackLog]);
+		
+	if (newHeroHp <= 0) {
+		handleHeroDeath(); // Si el héroe muere, se realiza la acción de muerte
+	} else {
+		setHero(prev => ({ ...prev, currentHp: newHeroHp })); // Actualiza el HP del héroe
+	}
+		
+
+};
+ 
+  
+//funcion principal de combate
+const combatTurn = () => {
 	const newLog = [...log, hero.name + ' se enfrenta a ' + monster.name];
-	setLog(newLog);
-
-};
-
-
-
+	setLog((prevLog) => [...prevLog, newLog]);
+	checkOrder(hero, monster);
+	if (turn === 'hero') {
+	  // Ataque del héroe
+	  handleHeroAttack();
+	} else {
+	  // Ataque del monstruo
+	  handleMonsterAttack();
+	}
+	handleLog();
+	// Cambiar de turno
+	setTurn(turn === 'hero' ? 'monster' : 'hero');
+  };
+  
   return (
     <div className='Scenario-father'>
       <div className='Scenario-card-board'>
@@ -159,7 +276,7 @@ const handleLog = () => {
           </div>
           <div className='action-container'>
             <div className='change-button' onClick={handleLog}>Continuar</div>
-            <Sword handleTurn={handleLog} />
+            <Sword combatTurn={combatTurn} />
           </div>
         </div>
         <div className='Scenario-log'>
