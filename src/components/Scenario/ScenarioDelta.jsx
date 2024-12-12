@@ -236,7 +236,13 @@ const combatTurn = () => {
 	// Cambiar de turno
 	setTurn(turn === 'hero' ? 'monster' : 'hero');
   };
-  
+
+  const writeLog = () => {
+	return log.map((entry, index) => (
+	  <p key={index}>{entry}</p> // Asegúrate de envolver cada entrada en un elemento JSX válido, como un <p>
+	));
+  };
+
   return (
     <div className='Scenario-father'>
       <div className='Scenario-card-board'>
@@ -281,12 +287,10 @@ const combatTurn = () => {
         </div>
         <div className='Scenario-log'>
           {/* Aquí iría el log del combate */}
-          {log.map((entry, index) => (
-            <div key={index}>{entry}</div>
-          ))}
+          {writeLog(log)}</div>          
         </div>
       </div>
-    </div>
+    
   );
 }
 

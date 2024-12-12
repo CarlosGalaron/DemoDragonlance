@@ -25,9 +25,8 @@ function Scenario() {
 	const [remainingMonsters, setRemainingMonsters] = useState([...arrayMonsters]); // Copia del array inicial
 	const [remainingHeroes, setRemainingHeroes] = useState([...arrayHeroes]); // Copia del array inicial
 
-	const [turn, setTurn] = useState(0);
-	const [action, setAction] = useState(1);
-	const [playerIsFirst, setPlayerIsFirst] = useState(false);
+	const [turn, setTurn] = useState(0);	
+	const [playerIsFirst, setPlayerIsFirst] = useState('');
 
 	// Función para cambiar el héroe seleccionado
 	const handleHeroChange = (event) => {
@@ -88,19 +87,18 @@ function Scenario() {
     setTurn(0);
   };
 
-	//comprobamos el orden de los combatientes
-	const checkCombatOrder = () => {
-    hero.initiative = hero.dexterity + hero.intelligence;
-    monster.initiative = monster.dexterity + monster.intelligence;
+  const checkCombatOrder = () => {
+    const heroInitiative = hero.dexterity + hero.intelligence;
+    const monsterInitiative = monster.dexterity + monster.intelligence;
 
-    if (hero.initiative >= monster.initiative) {
-        setPlayerIsFirst(true); // El héroe va primero
-				console.log("El héroe va primero");
+    if (heroInitiative >= monsterInitiative) {
+        setPlayerIsFirst('hero'); // Actualiza el estado correctamente
+        console.log("El héroe va primero");
     } else {
-        setPlayerIsFirst(false); // El monstruo va primero
-				console.log("El monstruo va primero");
+        setPlayerIsFirst('monster'); // Actualiza el estado correctamente
+        console.log("El monstruo va primero");
     }
-};
+	};
 
 	//calculamos el daño del héroe
 	const calculateHeroAttackDamage = () => {  
@@ -252,12 +250,9 @@ function Scenario() {
 		gameEnd(); // Verifica el estado del juego después del cambio.
 	};
 
-
-
 	const heroAtack = () => {
 
-		calculateHeroAttackDamage();
-		calculateIfHeroHitsMonster();
+		calculateHeroAttackDamage();		
 		calculateMonsterHp();
 		
 		return monster.currentHp;
@@ -265,8 +260,7 @@ function Scenario() {
 
 	const monsterAtack = () => {
 
-		calculateMonsterAttackDamage();
-		calculateIfMonsterHitsHero();
+		calculateMonsterAttackDamage();		
 		calculateHeroHp();
 
 		
@@ -275,48 +269,41 @@ function Scenario() {
 
 
 	const handleTurn = () => {
-		console.log(hero.name, hero.currentHp ,monster.name, monster.currentHp)	
-		checkCombatOrder();
+    console.log(hero.name, hero.currentHp, monster.name, monster.currentHp);
 
-		//si el heroe va primero
-		if (setPlayerIsFirst(true)) {
-			heroAtack();			
-			calculateIfMonsterDead();
-			if (monster.isDead) {
-				forceMonsterChange();
-				incrementTurn();
-			}
-			//si no ha muerto el monstruo, ataca en segundo lugar
-			else {
-				monsterAtack();				
-				calculateIfHeroDead();
-				if (hero.isDead) {
-					forceHeroChange();
-					incrementTurn();
-				}							
-			}
-		}
-		// si el monstruo va primero
-		else {
-			monsterAtack();			
-			calculateIfHeroDead();
-			if (hero.isDead) {
-				forceHeroChange();				
-			}
-			//si no ha muerto, el heroe va segundo
-			else {
-				heroAtack();				
-				calculateIfMonsterDead();
-				if (monster.isDead) {
+    // Orden de ataque basado en iniciativa
+    let currentPlayerFirst = hero.dexterity + hero.intelligence >= monster.dexterity + monster.intelligence ? 'hero' : 'monster';
+
+    if (currentPlayerFirst === 'hero') {
+        heroAtack();
+        if (calculateIfMonsterDead()) {
+            forceMonsterChange();
+        }
+    } else {
+        monsterAtack();
+        if (calculateIfHeroDead()) {
+            forceHeroChange();
+        }
+    }
+
+		//cambiamos orden de iniciativa
+		currentPlayerFirst === 'hero' ? currentPlayerFirst='monster' : currentPlayerFirst='hero';
+
+		if (currentPlayerFirst === 'hero') {
+			heroAtack();
+			if (calculateIfMonsterDead()) {
 					forceMonsterChange();
-				}
 			}
-		incrementTurn();			
-		}
-		console.log(hero.name, hero.currentHp ,monster.name, monster.currentHp)
+	} else {
+			monsterAtack();
+			if (calculateIfHeroDead()) {
+					forceHeroChange();
+			}
+	}
 
-
-	};
+    // Cambiamos turno
+    incrementTurn();
+};
 	
   return (
     <div className='Scenario-father'>
