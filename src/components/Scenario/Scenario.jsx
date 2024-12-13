@@ -243,8 +243,8 @@ function Scenario() {
 					selectedWeapon: updatedHeroes[0].weapon1,
 					selectedAbility: updatedHeroes[0].attack1,
 				});
-			}
-			console.log(`el heroe ${hero.name} entra en batalla`)
+        console.log(`el heroe ${hero.name} entra en batalla`)
+			}			
 			return updatedHeroes;
 		});
 		gameEnd(); // Verifica el estado del juego después del cambio.
@@ -304,6 +304,19 @@ function Scenario() {
     // Cambiamos turno
     incrementTurn();
 };
+
+useEffect(() => {
+  if (monster.currentHp <= 0) {
+    forceMonsterChange(); // Cambia al siguiente monstruo automáticamente
+  }
+}, [monster.currentHp]); // Solo se ejecuta cuando `currentHp` del monstruo cambia
+
+useEffect(() => {
+  if (hero.currentHp <= 0) {
+    forceHeroChange(); // Cambia al siguiente héroe automáticamente
+  }
+}, [hero.currentHp]); // Solo se ejecuta cuando `currentHp` del héroe cambia
+
 	
   return (
     <div className='Scenario-father'>

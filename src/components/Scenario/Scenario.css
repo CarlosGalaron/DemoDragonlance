@@ -143,3 +143,8 @@
 	  }
 	
 }
+
+.Scenario-log-entry {
+	color: darkred;
+	font-size: 14px;
+}
