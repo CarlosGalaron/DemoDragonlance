@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import ScenarioGamma from './components/Scenario/ScenarioGamma.jsx';
+import ScenarioDelta from './components/Scenario/ScenarioDelta.jsx';
 
 function App() {
   return (
     <div className="App">
-      <ScenarioGamma/>
+      <ScenarioDelta/>
     </div>
   );
 }

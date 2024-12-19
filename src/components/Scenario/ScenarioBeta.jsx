@@ -4,23 +4,15 @@ import './Scenario.css'
 import Sword from '../Sword/Sword.jsx'
 import CharCard from '../CharCard/CharCard.jsx'
 import { arrayHeroes, arrayMonsters } from '../../modelo/charFunctions'
-import Logo from '../Logo/Logo.jsx'
 
 
-function Scenario() {
+function ScenarioBeta() {
 
-  const [log, setLog] = useState([]); // Estado para el log
+	const [log, setLog] = useState([]);
 
-  const initialGameState = {
-    gameOver: false,    
-    // Puedes agregar otros estados relevantes aquí
-  };
-
-  const [gameState, setGameState] = useState(initialGameState);
-
-  // Función para agregar mensajes al log
-  function addLogMessage(message) {
-      setLog(prevLog => [...prevLog, message]); // Agrega el mensaje al estado
+	// Función para agregar mensajes al log
+	const addLogMessage = (message) => {
+    setLog(prevLog => [...prevLog, message]); // Agrega el mensaje al estado
   }
 
 	//declaramos al heroes con sus valores iniciales por defecto
@@ -59,7 +51,7 @@ function Scenario() {
         ...prevHero, // Mantén las propiedades existentes del héroe
         selectedWeapon // Actualiza el arma seleccionada
     }));
-};
+	};
 
 	// Función para cambiar la habilidad seleccionada del héroe
 	const handleAbilityChange = (event) => {
@@ -73,18 +65,6 @@ function Scenario() {
 			}));
 	};
 
-	// Cambiado: El uso de variables de estado dentro de `incrementTurn` era incorrecto.
-  const incrementTurn = () => {
-    const gameEnded = gameEnd(); // Evaluamos si el juego terminó.
-    if (!gameEnded) {
-      setTurn((prevTurn) => prevTurn + 1);
-			console.log(`empieza un nuevo turno`)
-      addLogMessage("Empieza un nuevo turno");
-    } else {
-      addLogMessage("El juego ha terminado");      
-    }
-  };
-
   //reseteamos el juego
   const resetGame = () => {
     setHero({
@@ -94,41 +74,38 @@ function Scenario() {
     });
     setMonster({
       ...arrayMonsters[0],
-      selectedWeapon: arrayMonsters[0].weapon1,
+      selctedWeapon: arrayMonsters[0].weapon1,
       selectedAbility: arrayMonsters[0].attack1,
     });
     setRemainingHeroes([...arrayHeroes]);
     setRemainingMonsters([...arrayMonsters]);
-    setGameState({ ...gameState, gameOver: false });
-    setTurn(0);
+		setLog([]);    
   };
 
-  // const checkCombatOrder = () => {
-  //   const heroInitiative = hero.dexterity + hero.intelligence;
-  //   const monsterInitiative = monster.dexterity + monster.intelligence;
+  const checkCombatOrder = () => {
+    const heroInitiative = hero.dexterity + hero.intelligence;
+    const monsterInitiative = monster.dexterity + monster.intelligence;
 
-  //   if (heroInitiative >= monsterInitiative) {
-  //       setPlayerIsFirst('hero'); // Actualiza el estado correctamente
-  //       console.log("El héroe va primero");
-  //   } else {
-  //       setPlayerIsFirst('monster'); // Actualiza el estado correctamente
-  //       console.log("El monstruo va primero");
-  //   }
-	// };
+    if (heroInitiative >= monsterInitiative) {
+        setPlayerIsFirst('hero'); // Actualiza el estado correctamente
+        console.log("El héroe va primero");
+    } else {
+        setPlayerIsFirst('monster'); // Actualiza el estado correctamente
+        console.log("El monstruo va primero");
+    }
+	};
 
 	//calculamos el daño del héroe
 	const calculateHeroAttackDamage = () => {  
 		const heroDamage = hero.selectedWeapon.damage + hero.selectedAbility.damage;
-		console.log(`${hero.name} hara ${heroDamage} de daño si acierta`);
-    addLogMessage(`${hero.name} hara ${heroDamage} de daño si acierta`);
+		console.log(`${hero.name} hara ${heroDamage} de daño si acierta`);		
 		return heroDamage;
 	};
 
 	//calculamos el daño del monstruo
 	const calculateMonsterAttackDamage = () => {
 		const monsterDamage = monster.selectedWeapon.damage + monster.selectedAbility.damage;
-		console.log(`${monster.name} hara ${monsterDamage} de daño si acierta`);
-    addLogMessage(`${monster.name} hara ${monsterDamage} de daño si acierta`);
+		console.log(`${monster.name} hara ${monsterDamage} de daño si acierta`);		
 		return monsterDamage;
 	};
 	
@@ -139,12 +116,12 @@ function Scenario() {
 		let chanceToHit = 50 + (dexDiff * 5);
 		if (chanceToHit >= Math.random() * 100) {
 			console.log("y el ataque del héroe tuvo exito, ");
-      addLogMessage(`y el ataque tuvo exito`)
+			addLogMessage(`${hero.name} atacó a ${monster.name} y acertó, le quedan ${monster.currentHp} puntos de vida`);
 			return true;
 		}
 		else {
 			console.log("pero fallo");
-      addLogMessage("pero fallo")
+			addLogMessage(`${hero.name} atacó a ${monster.name} pero falló`)
 			return false;
 		}
 	}
@@ -155,8 +132,7 @@ function Scenario() {
 				const heroDamage = calculateHeroAttackDamage(); // Calculamos el daño del héroe
 				setMonster((prevMonster) => {
 						const updatedHp = Math.max(prevMonster.currentHp - heroDamage, 0); // Restamos el daño correctamente
-						console.log(`${monster.name} recibe ${heroDamage} de daño, le quedan ${updatedHp} puntos de vida`);
-            addLogMessage(`${monster.name} recibe ${heroDamage} de daño, le quedan ${updatedHp} puntos de vida`);
+						console.log(`${monster.name} recibe ${heroDamage} de daño, le quedan ${updatedHp} puntos de vida`);						
 						return {
 								...prevMonster,
 								currentHp: updatedHp, // Actualizamos correctamente los puntos de vida
@@ -170,13 +146,13 @@ function Scenario() {
 		let dexDiff = monster.dexterity - hero.dexterity;
 		let chanceToHit = 50 + (dexDiff * 5);
 		if (chanceToHit >= Math.random() * 100) {
-			console.log("y el ataque del monstruo tuvo exito, ");
-      addLogMessage("y el ataque tuvo exito")
+			addLogMessage(`${monster.name} atacó a ${hero.name} y acertó`);
+			console.log("y el ataque del monstruo tuvo exito, ");			
 			return true;
 		}
 		else {
 			console.log("pero fallo");
-      addLogMessage("pero fallo")
+			addLogMessage(`${monster.name} atacó a ${hero.name} pero falló`)
 			return false;
 		}
 	}
@@ -188,7 +164,7 @@ function Scenario() {
 				setHero((prevHero) => {
 						const updatedHp = Math.max(prevHero.currentHp - monsterDamage, 0); // Restamos el daño correctamente
 						console.log(`${hero.name} recibe ${monsterDamage} de daño, le quedan ${updatedHp} puntos de vida`);
-            addLogMessage(`${hero.name} recibe ${monsterDamage} de daño, le quedan ${updatedHp} puntos de vida`);
+						addLogMessage(` le quedan ${updatedHp} puntos de vida`)
 						return {
 								...prevHero,
 								currentHp: updatedHp, // Actualizamos correctamente los puntos de vida
@@ -199,15 +175,14 @@ function Scenario() {
 
 	//comprobamos si el monstruo ha muerto
 	const calculateIfMonsterDead = () => {
-		if (monster.currentHp <= 0) {
-				setMonster((prevMonster) => ({
-						...prevMonster,
-						currentHp: 0,
-						isDead: true,
-				}));
-				console.log(`${monster.name} murio a manos de ${hero.name}`)
-        addLogMessage(`${monster.name} murio a manos de ${hero.name}`)
-				return true;
+		if (monster.currentHp <= 0) {			
+			setMonster((prevMonster) => ({
+					...prevMonster,
+					currentHp: 0,
+					isDead: true,
+			}));
+			console.log(`${monster.name} murio a manos de ${hero.name}`)				
+			return true;
 		}
 		return false;
 	};
@@ -215,14 +190,14 @@ function Scenario() {
 	//comprobamos si el héroe ha muerto
 	const calculateIfHeroDead = () => {
 		if (hero.currentHp <= 0) {
-				setHero((prevHero) => ({
-						...prevHero,
-						currentHp: 0,
-						isDead: true,
-				}));
-				console.log(`${hero.name} murio a manos de ${monster.name}`)
-        addLogMessage(`${hero.name} murio a manos de ${monster.name}`)
-				return true;
+			addLogMessage(`${hero.name} murió a manos de ${monster.name}`)
+			setHero((prevHero) => ({
+					...prevHero,
+					currentHp: 0,
+					isDead: true,
+			}));
+			console.log(`${hero.name} murio a manos de ${monster.name}`)				
+			return true;
 		}
 		return false;
 	};
@@ -230,14 +205,12 @@ function Scenario() {
 	//comprobamos si el juego ha terminado
 	const gameEnd = () => {
     if (remainingMonsters.length === 0) {
+      addLogMessage(`Victoria!! Los heroes continuan su aventura`)
 			console.log("los heroes han ganado")
-      addLogMessage(`Victoria, los heroes continuan su aventura`)
-      setGameState({ ...gameState, gameOver: true });
       return true;
     } else if (remainingHeroes.length === 0) {
+      addLogMessage(`Has sido derrotado!`);
 			console.log("los heroes han sido derrotados")
-      addLogMessage(`has suspendido`)
-      setGameState({ ...gameState, gameOver: true });
       return true;
     }
     return false;
@@ -245,24 +218,26 @@ function Scenario() {
 
 	//cambiamos al siguiente monstruo si el actual muere
 	const forceMonsterChange = () => {
+		addLogMessage(`${monster.name} murió a manos de ${hero.name}`)
 		setRemainingMonsters(prevMonsters => {
 			const updatedMonsters = prevMonsters.filter(m => m.name !== monster.name);
 			if (updatedMonsters.length > 0) {
 				setMonster({
 					...updatedMonsters[0],
 					selectedWeapon: updatedMonsters[0].weapon1,
-					selectedAbility: updatedMonsters[0].attack1,          
+					selectedAbility: updatedMonsters[0].attack1,
 				});
-        addLogMessage(`${updatedMonsters[0].name} entra en batalla`);
 			}
 			console.log (`el enemigo ${monster.name} entra en batalla`)
 			return updatedMonsters;
-		});		
+		});
+		gameEnd(); // Verifica el estado del juego después del cambio.
 	};
 	
 
 	//cambiamos al siguiente héroe si el actual muere
 	const forceHeroChange = () => {
+		addLogMessage(`${hero.name} murió a manos de ${monster.name}`)
 		setRemainingHeroes(prevHeroes => {
 			const updatedHeroes = prevHeroes.filter(m => m.name !== hero.name);
 			if (updatedHeroes.length > 0) {
@@ -271,17 +246,29 @@ function Scenario() {
 					selectedWeapon: updatedHeroes[0].weapon1,
 					selectedAbility: updatedHeroes[0].attack1,
 				});
-        addLogMessage(`${updatedHeroes[0].name} entra en batalla`);
         console.log(`el heroe ${hero.name} entra en batalla`)
 			}			
 			return updatedHeroes;
-		});		
+		});
+		gameEnd(); // Verifica el estado del juego después del cambio.
 	};
+
+	useEffect(() => {
+		if (monster.currentHp <= 0) {
+			forceMonsterChange(); // Cambia al siguiente monstruo automáticamente
+		}
+	}, [monster.currentHp]); // Solo se ejecuta cuando `currentHp` del monstruo cambia
+	
+	useEffect(() => {
+		if (hero.currentHp <= 0) {
+			forceHeroChange(); // Cambia al siguiente héroe automáticamente
+		}
+	}, [hero.currentHp]); // Solo se ejecuta cuando `currentHp` del héroe cambia
 
 	const heroAtack = () => {
 
 		calculateHeroAttackDamage();		
-		calculateMonsterHp();
+		calculateMonsterHp();		
 		
 		return monster.currentHp;
 	};
@@ -297,11 +284,6 @@ function Scenario() {
 
 
 	const handleTurn = () => {
-    gameEnd(); // Verifica el estado del juego antes de iniciar el turno
-    if (gameState.gameOver) {
-      // Si el juego ya ha terminado, no se ejecuta nada más
-      return;
-    }
     console.log(hero.name, hero.currentHp, monster.name, monster.currentHp);
 
     // Orden de ataque basado en iniciativa
@@ -310,63 +292,46 @@ function Scenario() {
     if (currentPlayerFirst === 'hero') {
         heroAtack();
         if (calculateIfMonsterDead()) {
-            forceMonsterChange();
-            gameEnd();
+          forceMonsterChange();
         }
     } else {
         monsterAtack();
         if (calculateIfHeroDead()) {
-            forceHeroChange();
-            gameEnd();
+          forceHeroChange();
         }
     }
+
 		//cambiamos orden de iniciativa
 		currentPlayerFirst === 'hero' ? currentPlayerFirst='monster' : currentPlayerFirst='hero';
-
-		if (currentPlayerFirst === 'hero') {
-			heroAtack();
-			if (calculateIfMonsterDead()) {
+		if (!calculateIfHeroDead() || !calculateIfMonsterDead()) {
+			if (currentPlayerFirst === 'hero') {
+				heroAtack();
+				if (calculateIfMonsterDead()) {
+					addLogMessage(`${monster.name} murió a manos de ${hero.name}`)
 					forceMonsterChange();
-          gameEnd();
-			}
-	} else {
-			monsterAtack();
-			if (calculateIfHeroDead()) {
+				}
+			} else {
+				monsterAtack();
+				if (calculateIfHeroDead()) {
+					addLogMessage(`${hero.name} murió a manos de ${monster.name}`)
 					forceHeroChange();
-          gameEnd();
+				}
 			}
-	}
-  // Cambiamos turno
-  incrementTurn();
-  if (gameEnd()) {
-    resetGame();
-  }
+		}
+
 };
-
-useEffect(() => {
-  if (monster.currentHp <= 0) {
-    forceMonsterChange(); // Cambia al siguiente monstruo automáticamente
-  }
-}, [monster.currentHp]); // Solo se ejecuta cuando `currentHp` del monstruo cambia
-
-useEffect(() => {
-  if (hero.currentHp <= 0) {
-    forceHeroChange(); // Cambia al siguiente héroe automáticamente
-  }
-}, [hero.currentHp]); // Solo se ejecuta cuando `currentHp` del héroe cambia
 
 function writeLog(messages) {
   return messages.map((msg, index) => (
       <p className='Scenario-log-entry' key={index}>{msg}</p>
   ));
 }
+
 	
   return (
     <div className='Scenario-father'>
-      <Logo />
-      <div className='Scenario-card-board'>
+        <div className='Scenario-card-board'>
 			<CharCard character={hero} />
-			
       <CharCard character={monster} />
         </div>
         <div className='Scenario-buttons-and-log'>
@@ -380,7 +345,7 @@ function writeLog(messages) {
                         </div>
                         <div className='combat-selector-container'>
 													{/* Selector de Personaje */}
-													<select className='combat-selector' onChange={handleHeroChange}>
+													<select className='combat-selector' onClick={handleHeroChange}>
 														{arrayHeroes.map((hero) => (
 															<option key={hero.name} value={hero.name}>
 																{hero.name}
@@ -405,17 +370,17 @@ function writeLog(messages) {
                     </div>    
                 </div>
                 <div className='action-container'>
-                    <div className='change-button'>Reiniciar</div>
+                    <div className='change-button' onClick={resetGame}>Reiniciar</div>
                     <Sword handleTurn={handleTurn} />
                 </div>
             </div>
             <div className='Scenario-log'>
 							{writeLog(log)}
-			</div>
+						</div>
         </div>
         
     </div>
   )
 }
 
-export default Scenario
+export default ScenarioBeta

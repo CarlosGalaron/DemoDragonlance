@@ -4,6 +4,7 @@ import SturmPortrait from '../images/Sturm.png'
 import DraconianoPortrait from '../images/Draconiano.png'
 import MagoOscuroPortrait from '../images/MagoOscuro.png'
 import MinotauroPortrait from '../images/Minotauro.png'
+import EvilFranPortrait from '../images/FranEvil.png'
 
 
 //charFunctions.js
@@ -268,6 +269,40 @@ export const Caramon = {
       damage: 4 * (d4() + 16 / 4), // intelligence de MagoOscuro
     },
   };
+
+  export const EvilFran = {
+    ...createCharacter(),
+    name: 'Evil Fran',
+    type: 'monster',
+    portrait: EvilFranPortrait,
+    strength: 20,
+    dexterity: 20,
+    intelligence: 20,
+    wisdom: 20,
+    constitution: 20,
+    charisma: 20,
+    maxHp: null, // calcular al inicio del combate
+    currentHp: null, // calcular tras cada ataque recibido
+    armor: 20,
+    weapon1: {
+      name: 'Suspenso',
+      damage: 20 * d6(),
+    },
+    weapon2: {
+      name: 'Deberes',
+      damage: 10 * d4(),
+    },
+    attack1: {
+      name: 'Suspenso',
+      damageMod: 1,
+      damage: d6() + 8 / 4,
+    },
+    attack2: {
+      name: 'Deberes',
+      damageMod: 1,
+      damage: (d4() + 16 / 4),
+    },
+  }
 export const characterArray = [Raistlin, Caramon, Sturm, Draconiano, Minotauro, MagoOscuro];
 
 export const initializeCharacter = (character) => {
@@ -286,6 +321,7 @@ export const initializeCharacter = (character) => {
     initializeCharacter(Draconiano),
     initializeCharacter(Minotauro),
     initializeCharacter(MagoOscuro),
+    initializeCharacter(EvilFran),
   ];
 
 
