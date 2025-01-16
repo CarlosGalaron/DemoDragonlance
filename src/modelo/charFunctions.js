@@ -321,7 +321,7 @@ export const initializeCharacter = (character) => {
     initializeCharacter(Draconiano),
     initializeCharacter(Minotauro),
     initializeCharacter(MagoOscuro),
-    initializeCharacter(EvilFran),
+    // initializeCharacter(EvilFran),
   ];
 
 
